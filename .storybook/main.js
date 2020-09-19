@@ -67,7 +67,7 @@ module.exports = {
                     // Updates the `resource.request` to reference our mocked module instead of the real one
                     resource.request = relativePath;
                 },
-            )
+            ),
         ];
 
         return config;
