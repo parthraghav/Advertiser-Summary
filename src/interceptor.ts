@@ -1,4 +1,5 @@
 import "requestidlecallback-polyfill";
+import * as config from "./config";
 
 export default class Interceptor {
     constructor() {
@@ -6,10 +7,10 @@ export default class Interceptor {
         this.checkIfDOMIsConstructed();
     }
 
-    // https://medium.com/better-programming/chrome-extension-intercepting-and-reading-the-body-of-http-requests-dd9ebdf2348b
     interceptData() {
         var xhrOverrideScript = document.createElement("script");
         xhrOverrideScript.type = "text/javascript";
+        // https://medium.com/better-programming/chrome-extension-intercepting-and-reading-the-body-of-http-requests-dd9ebdf2348b
         xhrOverrideScript.innerHTML = `
         (function() {
           var XHR = XMLHttpRequest.prototype;
@@ -21,14 +22,14 @@ export default class Interceptor {
           }
           XHR.send = function() {
               this.addEventListener('load', function() {
-                  if (this.url.includes('<url-you-want-to-intercept>')) {
+                  if (this.url.includes('/graphql')) {
                       var dataDOMElement = document.createElement('div');
-                      dataDOMElement.id = '__interceptedData';
+                      dataDOMElement.className = '${config.INTERCEPTED_RESPONSE_DOM_CLASSNAME}';
                       dataDOMElement.innerText = this.response;
                       dataDOMElement.style.height = 0;
                       dataDOMElement.style.overflow = 'hidden';
+                      dataDOMElement.setAttribute('data-queued',true);
                       document.body.appendChild(dataDOMElement);
-                      console.log(this.response);
                   }               
               });
               return send.apply(this, arguments);
@@ -39,13 +40,10 @@ export default class Interceptor {
     }
 
     checkIfDOMIsConstructed() {
-        console.log(this);
         if (document.body && document.head) {
-            console.log(this);
             this.interceptData();
         } else {
-            console.log(1, this);
-            window.requestIdleCallback(this.checkIfDOMIsConstructed);
+            window.requestIdleCallback(this.checkIfDOMIsConstructed.bind(this));
         }
     }
 }
