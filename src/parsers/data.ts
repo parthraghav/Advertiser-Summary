@@ -24,4 +24,9 @@ export class Advertiser {
     }
 }
 
-export class NullAdvertiser {}
+export class NullAdvertiser {
+    content: any;
+    constructor(content?: any) {
+        this.content = content;
+    }
+}
