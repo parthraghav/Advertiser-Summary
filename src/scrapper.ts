@@ -1,6 +1,7 @@
 import * as config from "./config";
 import "requestidlecallback-polyfill";
-
+import { FacebookParser } from "./parsers";
+import { Advertiser } from "./parsers/data";
 export default class Scrapper {
     constructor() {
         this.scrapeData();
@@ -18,10 +19,13 @@ export default class Scrapper {
             });
         }
         for (let el of responseEls) {
-            console.log(el.innerText);
+            let response = JSON.parse(el.innerText);
+            let parsedObj = FacebookParser.parse(response);
+            if (parsedObj instanceof Advertiser) {
+                // do something
+            }
             // remove after processing
             this.removeResponseBlock(el);
-            console.log(el.innerText);
         }
     }
 
