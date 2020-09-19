@@ -15,7 +15,7 @@
         {
             "js": ["js/contentScript.js"],
             "run_at": "document_start",
-            "matches": ["<all_urls>"]
+            "matches": ["http://*.facebook.com/*"]
         }
     ],
     "icons": {
