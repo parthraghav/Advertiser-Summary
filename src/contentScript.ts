@@ -1,2 +1,5 @@
-console.log(window.location.href);
-console.log("Content script was called!");
+import Interceptor from "./interceptor";
+import Scrapper from "./scrapper";
+
+const interceptor = new Interceptor();
+const scrapper = new Scrapper();
