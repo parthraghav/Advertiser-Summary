@@ -1,10 +1,14 @@
 import * as config from "./config";
 import "requestidlecallback-polyfill";
-import { FacebookParser } from "./parsers";
-import { Advertiser } from "./parsers/data";
+import { FacebookParser } from "@src/parsers";
+import { Advertiser } from "@src/parsers/data";
+import Messenger from "@src/messenger";
+
 export default class Scrapper {
+    messenger: Messenger;
     constructor() {
         this.scrapeData();
+        this.messenger = new Messenger("Content");
     }
 
     scrapeData() {
@@ -19,10 +23,17 @@ export default class Scrapper {
             });
         }
         for (let el of responseEls) {
-            let response = JSON.parse(el.innerText);
-            let parsedObj = FacebookParser.parse(response);
-            if (parsedObj instanceof Advertiser) {
-                // do something
+            let data = el.innerText;
+            let chunks = data.split("\n");
+            for (let chunk of chunks) {
+                let response = JSON.parse(chunk);
+                let parsedObj = FacebookParser.parse(response);
+                // verify if the parsed object is an Advertiser
+                console.log(parsedObj);
+                if (parsedObj instanceof Advertiser) {
+                    // send the parsed data to the background script
+                    this.messenger.sendNewAdvertiserData(parsedObj);
+                }
             }
             // remove after processing
             this.removeResponseBlock(el);
@@ -33,10 +44,8 @@ export default class Scrapper {
         // cross browser function to remove a DIV element
         try {
             el.remove();
-            console.log("remove succeded");
         } catch {
             el.parentNode?.removeChild(el);
-            console.log("remove failed");
         }
     }
 }
