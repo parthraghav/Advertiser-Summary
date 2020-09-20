@@ -33,10 +33,7 @@ export default class Database {
     }
     get_all_advertiser_data() {
         return this.db.queryAll("advertiser_data", {
-            sort: [
-                ["view_count", "DESC"],
-                ["last_visited", "DESC"],
-            ],
+            sort: [["view_count", "DESC"]],
         });
     }
     get_all_advertiser_views() {
