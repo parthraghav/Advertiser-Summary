@@ -59,6 +59,7 @@ const AdvertiserContainer = ({
             setLogoUrl(responseUrl);
         })();
     }, []);
+
     return (
         <div
             className="hrow advertiser-row"
@@ -69,8 +70,10 @@ const AdvertiserContainer = ({
             </div>
             <div className="logo-container">
                 <div className="logo-wrapper">
-                    {logoUrl && (
+                    {logoUrl ? (
                         <img className="advertiser-logo" src={logoUrl} />
+                    ) : (
+                        <div className="empty-img-placeholder"></div>
                     )}
                 </div>
             </div>
@@ -89,7 +92,9 @@ const AdvertiserContainer = ({
                 </div>
             </div>
             <div className="history-grid-container">
-                <AdvertiserHistoryGrid view_history={view_history} />
+                <AdvertiserHistoryGrid
+                    view_history={view_history ?? [0, 0, 0, 0, 0, 0, 0]}
+                />
             </div>
         </div>
     );
@@ -99,7 +104,7 @@ export const Popup = () => {
     const messenger = new Messenger("Popup");
     const [advertiserData, setAdvertiserData] = useState<any>([]);
     const [advertiserViews, setAdvertiserViews] = useState<any>([]);
-
+    const [viewHistories, setViewHistories] = useState<any>({});
     const handleRetrievedDataResponse = useCallback(
         (msg: any) => {
             if (msg.subject == "GET_AD_DATA" && msg.from == "Background") {
@@ -120,11 +125,35 @@ export const Popup = () => {
         [advertiserData, advertiserViews],
     );
 
-    React.useEffect(() => {
+    useEffect(() => {
         messenger.onRetrievedDataResponse(handleRetrievedDataResponse);
         messenger.sendRetrieveDataRequest();
     }, []);
-    console.log(advertiserData, advertiserViews);
+
+    useEffect(() => {
+        // make sure [advertiserViews] is not empty
+        if (!Object.keys(advertiserViews).length) {
+            return;
+        }
+        const viewhistoriesCopy = viewHistories;
+        // loop every element of [advertiserViews]
+        advertiserViews.forEach((el: any) => {
+            // for every element make a key in [advertiserViews] and assign a value of [0,0,0,0,0,0,0] initially if the key doesn't exist
+            let elHistory = viewHistories[el.advertiser_uuid];
+            if (!elHistory) {
+                elHistory = [0, 0, 0, 0, 0, 0, 0];
+            }
+            // based on where the timestamp lies in the last week, update the array
+            const timeDiff = Math.abs(el.timestamp - new Date().getTime());
+            const dayDiff = Math.floor(timeDiff / 1000 / 60 / 60 / 24); // / 1000 / 60 / 60 / 24
+            if (dayDiff >= 0 && dayDiff <= 7) {
+                elHistory[elHistory.length - dayDiff - 1] += 1;
+            }
+            viewhistoriesCopy[el.advertiser_uuid] = elHistory;
+        });
+        console.log(viewhistoriesCopy);
+        setViewHistories(viewhistoriesCopy);
+    }, [advertiserViews]);
     // Renders the component tree
     return (
         <div className="popup-container">
@@ -143,7 +172,7 @@ export const Popup = () => {
                             platform={entry.platform}
                             url={entry.url}
                             last_visited={entry.last_visited}
-                            view_history={[0, 1, 2, 5, 3, 1, 4]}
+                            view_history={viewHistories[entry.uuid]}
                         />
                     ))}
                 </div>
