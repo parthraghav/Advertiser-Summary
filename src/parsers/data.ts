@@ -1,4 +1,4 @@
-type CaptureSource = "Facebook" | "Unknown";
+export type CaptureSource = "Facebook" | "Unknown";
 
 interface AdvertiserInfoModel {
     name: string;
