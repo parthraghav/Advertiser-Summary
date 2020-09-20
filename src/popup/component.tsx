@@ -45,21 +45,26 @@ const AdvertiserContainer = ({
     // fetch the image url
     useEffect(() => {
         (async function() {
-            const urlParams = new URL(url);
-            const logoUrlApi =
-                "http://favicongrabber.com/api/grab/" + urlParams.host;
-            let cachedLogoUrl = window.localStorage.getItem(logoUrlApi);
-            if (cachedLogoUrl != null) {
-                setLogoUrl(cachedLogoUrl);
-                return;
-            }
-            const response = await axios.get(logoUrlApi);
-            let responseUrl = response.data.icons[0].src;
-            window.localStorage.setItem(logoUrlApi, responseUrl);
-            setLogoUrl(responseUrl);
+            try {
+                const urlParams = new URL(url);
+                const logoUrlApi =
+                    "http://favicongrabber.com/api/grab/" + urlParams.host;
+                let cachedLogoUrl = window.localStorage.getItem(logoUrlApi);
+                if (cachedLogoUrl != null) {
+                    setLogoUrl(cachedLogoUrl);
+                    return;
+                }
+                const response = await axios.get(logoUrlApi);
+                let responseUrl = response.data.icons[0].src;
+                window.localStorage.setItem(logoUrlApi, responseUrl);
+                setLogoUrl(responseUrl);
+            } catch {}
         })();
     }, []);
 
+    useEffect(() => {
+        console.log(view_history);
+    }, [view_history]);
     return (
         <div
             className="hrow advertiser-row"
@@ -92,9 +97,7 @@ const AdvertiserContainer = ({
                 </div>
             </div>
             <div className="history-grid-container">
-                <AdvertiserHistoryGrid
-                    view_history={view_history ?? [0, 0, 0, 0, 0, 0, 0]}
-                />
+                <AdvertiserHistoryGrid view_history={view_history} />
             </div>
         </div>
     );
@@ -162,6 +165,7 @@ export const Popup = () => {
                     <h4>Top Advertisers</h4>
                     <h6>targeting you right now</h6>
                 </div>
+                <div className="hrow graph-container"></div>
                 <div className="hrow data-container">
                     {advertiserData.map((entry: any, index: number) => (
                         <AdvertiserContainer
@@ -172,7 +176,17 @@ export const Popup = () => {
                             platform={entry.platform}
                             url={entry.url}
                             last_visited={entry.last_visited}
-                            view_history={viewHistories[entry.uuid]}
+                            view_history={
+                                viewHistories[entry.uuid] ?? [
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                    0,
+                                ]
+                            }
                         />
                     ))}
                 </div>
