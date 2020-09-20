@@ -1,3 +1,6 @@
+body {
+    font-size: 100%;
+}
 :root {
     --history-grid-box-color-default: #f4f4f4;
     --history-grid-box-color-0: var(--history-grid-box-color-default);
@@ -24,6 +27,13 @@
     padding: 1em;
     flex-direction: column;
     text-align: center;
+}
+.title-container > h4 {
+    font-size: 2em;
+}
+.title-container > h6 {
+    font-size: 1em;
+    color: #f44336;
 }
 .title-container > * {
     margin: 0;
