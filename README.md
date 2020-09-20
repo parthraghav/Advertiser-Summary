@@ -1,4 +1,6 @@
-# AdSummary
+![Text Logo](docs/FullText-Logo.png)
+
+❤️❤️❤️ CONTRIBUTE TO THE PROJECT ❤️❤️❤️
 
 Get weekly analytics on your advertisers as they do on you!
 
