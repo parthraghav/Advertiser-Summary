@@ -5,16 +5,25 @@ type Source = "Background" | "Content" | "Popup";
 
 export default class Messenger {
     name: Source;
-    port: chrome.runtime.Port;
+    port: any;
+    private _responseHandler: Function = (msg: any) => {
+        console.error("Unitialised");
+    };
 
-    constructor(name: Source) {
+    constructor(name: Source, _port?: any) {
         this.name = name;
-        this.port = chrome.runtime.connect({ name: config.PORT_NAME });
-        this.port.onMessage.addListener(msg => this.handleResponse(msg));
+        this.port = _port ?? chrome.runtime.connect({ name: config.PORT_NAME });
+        this.port.onMessage.addListener((msg: any) =>
+            this._responseHandler(msg),
+        );
     }
 
-    handleResponse(msg: any) {
-        console.log("content script received a message", msg);
+    connect(port: chrome.runtime.Port): Messenger {
+        return new Messenger(this.name, port);
+    }
+
+    onRetrievedDataResponse(fn: Function) {
+        this._responseHandler = fn;
     }
 
     async sendMessage(
@@ -34,7 +43,29 @@ export default class Messenger {
     async sendNewAdvertiserData(advertiser: Advertiser) {
         const sender = this.name;
         const recipient = "Background";
-        const subject = "NEW_AD_DATA";
+        const subject = "PUT_AD_DATA";
         this.sendMessage(sender, recipient, advertiser, subject);
+    }
+
+    async sendRetrievedDataResponse(data: any, packet_name: string) {
+        const sender = this.name;
+        const recipient = "Popup";
+        const subject = "GET_AD_DATA";
+        this.sendMessage(
+            sender,
+            recipient,
+            {
+                name: packet_name,
+                contents: data,
+            },
+            subject,
+        );
+    }
+
+    async sendRetrieveDataRequest() {
+        const sender = this.name;
+        const recipient = "Background";
+        const subject = "GET_AD_DATA";
+        this.sendMessage(sender, recipient, {}, subject);
     }
 }
