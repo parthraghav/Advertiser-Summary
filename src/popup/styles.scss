@@ -1,5 +1,133 @@
+:root {
+    --history-grid-box-color-default: #f4f4f4;
+    --history-grid-box-color-0: var(--history-grid-box-color-default);
+    --history-grid-box-color-1: #f2be98;
+    --history-grid-box-color-2: #eb8c47;
+    --history-grid-box-color-3: #ff8307;
+    --history-grid-box-color-4: #e5731f;
+    --history-grid-box-color-5: #723b04;
+}
+
 .popup-container {
-    min-width: 300px;
-    min-height: 300px;
+    min-width: 440px;
+    min-height: 800px;
+}
+.page-container {
     display: flex;
+    flex-direction: column;
+}
+.page-container .hrow {
+    flex: 1;
+    display: flex;
+}
+.title-container {
+    padding: 1em;
+    flex-direction: column;
+    text-align: center;
+}
+.title-container > * {
+    margin: 0;
+    padding: 0;
+}
+.title-container h4 {
+    font-weight: 700;
+}
+
+.splash-container {
+    display: flex;
+}
+
+.advertiser-history-brid-box {
+    width: 20px;
+    height: 20px;
+    background-color: var(--history-grid-box-color-default);
+    border-radius: 8px;
+    margin: 1.5px;
+}
+
+.advertiser-history-brid-box.fill-0 {
+    background-color: var(--history-grid-box-color-0);
+}
+.advertiser-history-brid-box.fill-1 {
+    background-color: var(--history-grid-box-color-1);
+}
+.advertiser-history-brid-box.fill-2 {
+    background-color: var(--history-grid-box-color-2);
+}
+.advertiser-history-brid-box.fill-3 {
+    background-color: var(--history-grid-box-color-3);
+}
+.advertiser-history-brid-box.fill-4 {
+    background-color: var(--history-grid-box-color-4);
+}
+.advertiser-history-brid-box.fill-5 {
+    background-color: var(--history-grid-box-color-5);
+}
+
+.logo-wrapper {
+    padding: 1em;
+    background: #f4f4f4;
+    border-radius: 16px;
+}
+
+.info-container > span,
+div {
+    display: block;
+}
+.info-container-name-label {
+    font-size: 1.1em;
+    font-weight: 700;
+}
+.info-container-view-label {
+    font-size: 0.95em;
+    color: #4c89f5;
+}
+.info-container-share-label {
+    display: flex;
+    align-items: center;
+    font-size: 0.9em;
+}
+
+.info-container-share-label > .social-logo {
+    width: 20px;
+    height: 20px;
+    margin-left: 3px;
+    margin-right: 3px;
+}
+.advertiser-logo {
+    width: 30px;
+}
+
+.history-grid-wrapper {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+
+.data-container {
+    flex-direction: column;
+}
+.info-container {
+    flex: 1;
+    padding-left: 20px;
+    line-height: 1.3em;
+}
+.advertiser-row {
+    align-items: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    cursor: pointer;
+}
+.advertiser-row:hover {
+    background-color: #f3f3f3;
+}
+.index-container {
+    width: 50px;
+    display: flex;
+    justify-content: center;
+}
+.index-label {
+    font-weight: 500;
+}
+.history-grid-container {
+    padding-right: 20px;
 }
